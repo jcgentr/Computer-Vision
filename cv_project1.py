@@ -88,7 +88,7 @@ def main(m, M_1, M_2):
 	row3 = np.array([v[8],v[9],v[10],v[11]])
 	P[0], P[1], P[2] = row1, row2, row3
 	print("Projection Matrix:\n", P)
-	print("Shape of projection matrix:\n", P.shape)
+	# print("Shape of projection matrix:\n", P.shape)
 
 	# project 3D to 2D using the projection matrix
 	threeDpt = np.zeros((4,1), dtype=np.float64)
@@ -104,9 +104,37 @@ def main(m, M_1, M_2):
 		# print("Compare:\n", twoDpt[0:2], "\n", m_e[i])
 		sum_error += np.linalg.norm([(twoDpt[0][0] - m_e[i][0]),(twoDpt[1][0] - m_e[i][1])])
 	print("Total projection error:", sum_error)
-	return P
+	return P, v
 
-# invoke main function with norm. and unnorm. data
-P_norm = main(twodnorm, threednorm, threednorm_2)
-P_reg = main(two_D_pts, three_D_pts_1, three_D_pts_2)
+# invoke main function with norm. and orig. data
+P_norm, v_norm = main(twodnorm, threednorm, threednorm_2)
+P_orig, v_orig = main(two_D_pts, three_D_pts_1, three_D_pts_2)
+# print(np.linalg.norm(v_orig))
+# print(np.linalg.norm(v_norm))
+
+# find camera parameters
+u0 = np.dot([v_orig[0],v_orig[1],v_orig[2]], [[v_orig[8]],[v_orig[9]],[v_orig[10]]])
+v0 = np.dot([v_orig[4],v_orig[5],v_orig[6]], [[v_orig[8]],[v_orig[9]],[v_orig[10]]])
+fu = math.sqrt(np.dot([v_orig[0],v_orig[1],v_orig[2]],[[v_orig[0]],[v_orig[1]],[v_orig[2]]]) - u0**2)
+fv = math.sqrt(np.dot([v_orig[4],v_orig[5],v_orig[6]],[[v_orig[4]],[v_orig[5]],[v_orig[6]]]) - v0**2)
+tx = (v_orig[3] - u0*v_orig[11]) / fu
+ty = (v_orig[7] - v0*v_orig[11]) / fv
+r1 = (np.array([[v_orig[0]],[v_orig[1]],[v_orig[2]]]) - u0 * np.array([[v_orig[8]],[v_orig[9]],[v_orig[10]]])) / fu
+r2 = (np.array([[v_orig[4]],[v_orig[5]],[v_orig[6]]]) - v0 * np.array([[v_orig[8]],[v_orig[9]],[v_orig[10]]])) / fv
+r3 = np.array([[v_orig[8]],[v_orig[9]],[v_orig[10]]])
+
+print("u0:\n",u0[0])
+print("v0:\n",v0[0])
+print("fu:\n",fu)
+print("fv:\n",fv)
+print("tx:\n",tx[0])
+print("ty:\n",ty[0])
+print("r1:\n",r1)
+print("r2:\n",r2)
+print("r3:\n",r3)
+
+
+
+
+
 
