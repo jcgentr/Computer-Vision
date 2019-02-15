@@ -8,7 +8,11 @@ two_D_pts = np.loadtxt('2Dpoints.txt')
 three_D_pts_2 = np.loadtxt('3Dpoints_part2.txt') # part 2
 two_D_pts, three_D_pts_2 = shuffle(two_D_pts, three_D_pts_2, random_state=3)
 
-# data normalization
+
+''' 
+DATA NORMALIZATION
+'''
+
 # for 2D pts
 twoDsums = np.sum(two_D_pts, axis=0)
 x_avg = twoDsums[0] / len(two_D_pts)
@@ -29,6 +33,7 @@ for i in range(len(two_D_pts)):
 	 row = np.matmul(H_2D, np.transpose(np.array([two_D_pts[i][0], two_D_pts[i][1], 1])))
 	 row = row[0:2]
 	 twoDnorm[i] = np.transpose(row)
+
 
 # for 3D pts
 threeDsums = np.sum(three_D_pts_2, axis=0)
@@ -57,5 +62,10 @@ print(two_D_pts[0:10])
 print(twoDnorm[0:10])
 print(three_D_pts_2[0:10])
 print(threeDnorm[0:10])
+
+'''
+END OF DATA NORMALIZATION
+'''
+
 # M_2_c = M_2[0:58]
 # M_2_e = M_2[58:73]
