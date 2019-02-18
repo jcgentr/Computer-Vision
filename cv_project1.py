@@ -37,8 +37,9 @@ def main(m, M_1, isNormalized, H_2D=H_2D, H_3D=H_3D, two_D_pts=two_D_pts, three_
 	# find v (last column of V matrix times alpha scalar)
 	v_ = vh[11,:]
 	alpha = 1/math.sqrt(v_[8]**2 + v_[9]**2 + v_[10]**2)
+	print("alpha:", alpha)
 	v = alpha * v_
-	result = np.matmul(A,v)
+	result = np.matmul(A,v_)
 	print("A matmul v:", np.linalg.norm(result))
 	# print(result.shape)
 
@@ -52,7 +53,10 @@ def main(m, M_1, isNormalized, H_2D=H_2D, H_3D=H_3D, two_D_pts=two_D_pts, three_
 	# if normalized, denormalize P matrix
 	if isNormalized:
 		P = np.matmul(np.matmul(np.linalg.inv(H_2D), P), H_3D)
-
+		alpha = 1/math.sqrt(P[2][0]**2 + P[2][1]**2 + P[2][2]**2)
+		P = alpha * P
+	if P[2][3] > 0:
+		P = -1 * P
 	print("Projection Matrix:\n", P)
 
 	# project 3D to 2D using the projection matrix
